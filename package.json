@@ -1,27 +1,26 @@
 {
-    "name": "passport-uwshib",
-    "version": "0.0.6",
+    "name": "passport-cmushib",
+    "version": "0.0.1",
     "license": "MIT",
     "keywords": [
         "passport",
         "saml",
         "shibboleth",
         "sso",
-        "UW",
-        "University of Washington"
+        "CMU",
+        "Carnegie Mellon University"
     ],
-    "description": "Passport authentication strategy for University of Washington's Shibboleth service",
-    "homepage": "https://github.com/drstearns/passport-uwshib",
+    "description": "Passport authentication strategy for Carnegie Mellon University's Shibboleth service",
+    "homepage": "https://github.com/dmapper/passport-cmushib",
     "repository": {
         "type": "git",
-        "url": "https://github.com/drstearns/passport-uwshib"
+        "url": "https://github.com/dmapper/passport-cmushib"
     },
     "author": {
-        "name": "Dave Stearns",
-        "email": "dlsinfo@uw.edu",
-        "url": "https://ischool.uw.edu/people/faculty/dlsinfo"
+        "name": "Artur Zayats",
+        "email": "zag2art@gmail.com"
     },
-    "bugs": "https://github.com/drstearns/passport-uwshib/issues",
+    "bugs": "https://github.com/dmapper/passport-cmushib/issues",
     "main": "index.js",
     "dependencies": {
         "passport-saml": ">=0.5.2"

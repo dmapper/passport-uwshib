@@ -2,24 +2,26 @@
 "use strict;"
 
 /*
-    UW Shibboleth Passport Authentication Module
+    CMU Shibboleth Passport Authentication Module
 
     This module exposes a passport Strategy object that is pre-configured to
-    work with the UW's Shibboleth identity provider (IdP). To use this, you 
-    must register your server with the UW IdP, and you can use the 
+    work with the CMU's Shibboleth identity provider (IdP). To use this, you 
+    must register your server with the CMU IdP, and you can use the 
     metadataRoute() method below to provide the metadata necessary for 
     registration via the standard metadata url (urls.metadata).
 
     author: Dave Stearns
+
+    Modified for use at Carnegie Mellon University by Artur Zayats
 */
 
 const passport = require('passport');
 const saml = require('passport-saml');
 const util = require('util');
 
-const uwIdPCert = 'MIID/TCCAuWgAwIBAgIJAMoYJbDt9lKKMA0GCSqGSIb3DQEBBQUAMFwxCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJXQTEhMB8GA1UEChMYVW5pdmVyc2l0eSBvZiBXYXNoaW5ndG9uMR0wGwYDVQQDExRpZHAudS53YXNoaW5ndG9uLmVkdTAeFw0xMTA0MjYxOTEwMzlaFw0yMTA0MjMxOTEwMzlaMFwxCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJXQTEhMB8GA1UEChMYVW5pdmVyc2l0eSBvZiBXYXNoaW5ndG9uMR0wGwYDVQQDExRpZHAudS53YXNoaW5ndG9uLmVkdTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMH9G8m68L0Hf9bmf4/7c+ERxgDQrbq50NfSi2YTQWc1veUIPYbZy1agSNuc4dwn3RtC0uOQbdNTYUAiVTcYgaYceJVB7syWf9QyGIrglZPMu98c5hWb7vqwvs6d3s2Sm7tBib2v6xQDDiZ4KJxpdAvsoPQlmGdgpFfmAsiYrnYFXLTHgbgCc/YhV8lubTakUdI3bMYWfh9dkj+DVGUmt2gLtQUzbuH8EU44vnXgrQYSXNQkmRcyoE3rj4Rhhbu/p5D3P+nuOukLYFOLRaNeiiGyTu3P7gtc/dy/UjUrf+pH75UUU7Lb369dGEfZwvVtITXsdyp0pBfun4CP808H9N0CAwEAAaOBwTCBvjAdBgNVHQ4EFgQUP5smx3ZYKODMkDglkTbduvLcGYAwgY4GA1UdIwSBhjCBg4AUP5smx3ZYKODMkDglkTbduvLcGYChYKReMFwxCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJXQTEhMB8GA1UEChMYVW5pdmVyc2l0eSBvZiBXYXNoaW5ndG9uMR0wGwYDVQQDExRpZHAudS53YXNoaW5ndG9uLmVkdYIJAMoYJbDt9lKKMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADggEBAEo7c2CNHEI+Fvz5DhwumU+WHXqwSOK47MxXwNJVpFQ9GPR2ZGDAq6hzLJLAVWcY4kB3ECDkRtysAWSFHm1roOU7xsU9f0C17QokoXfLNC0d7KoivPM6ctl8aRftU5moyFJkkJX3qSExXrl053uxTOQVPms4ypkYv1A/FBZWgSC8eNoYnBnv1Mhy4m8bfeEN7qT9rFoxh4cVjMH1Ykq7JWyFXLEB4ifzH4KHyplt5Ryv61eh6J1YPFa2RurVTyGpHJZeOLUIBvJu15GzcexuDDXe0kg7sHD6PbK0xzEF/QeXP/hXzMxR9kQXB/IR/b2k4ien+EM3eY/ueBcTZ95dgVM=';
-const uwIdPEntryPoint = 'https://idp.u.washington.edu/idp/profile/SAML2/Redirect/SSO';
-const strategyName = 'uwsaml';
+const idPCert = 'MIIDLDCCAhSgAwIBAgIJAO1Zt6Sg0xhmMA0GCSqGSIb3DQEBBQUAMBgxFjAUBgNVBAMTDWxvZ2luLmNtdS5lZHUwHhcNMTQwMTIyMTkzMDM2WhcNMzAwNjI5MTkzMDM2WjAYMRYwFAYDVQQDEw1sb2dpbi5jbXUuZWR1MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4yIV5lVs9/7jdmRTi23AINTzGQTrL+p8EXmV1iL48YAZ36T+xnDpTXt2RDaioI34/P9vHYpSKY6C5gDNyXGQZYTrgJQHQRgJAGTsXshYoDeBboZZ9ax+7m86rKqmHZAprHALONubY0UtPDEGQKdMeeetAUAOh8kIKpGvKp96I+4pIT6S/p5VtBB80veOK6woqbzU0Qr9q1FbcZfJ6AjG8as9lBa9Si6vc/fGvFrjsJL3+cpvECuyG/yHp9obdwXLgxlQNPtXNeBgclgiaJJE8zWcZBUxWPboVeuC2Jfv7spIOcCyKPKTGUlobBoANGHqGMqbK+/7YzQ+J/s/4n0tvwIDAQABo3kwdzAdBgNVHQ4EFgQUoZye8kn1Hznd+tCaxJ3elowNIbYwSAYDVR0jBEEwP4AUoZye8kn1Hznd+tCaxJ3elowNIbahHKQaMBgxFjAUBgNVBAMTDWxvZ2luLmNtdS5lZHWCCQDtWbekoNMYZjAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4IBAQCp51hb/WPVfRtdQNZm6OQj8I6HwDGWmu5PzUycJAkD/VYd3wCM1zLwd32LMbxbA2ArKWBstErEsUog94zvMBWyAeT3Q5Gyghji0emF0nbZpNjPjE9bXavMbUppXF2/VHbuBtzEMBxIKV53X2et2MMc9mnNzZN1rofuIB//W9Fg9IWV5PLVbsvEYI98IkJ5t4JP92/V5p497O8jMj6oLhy7mI4FNx0pQnirAvrQxxgFTwVV5SEm87DBYRblUb4ba0yYVSBQg0EVbIb7QEDxHFWbzt4+NLolAQAMSQW+SJKf9V7+6+4uhMwpJxQwezzn41u9kGTIg9F8/s0IrgsTlAm3';
+const idPEntryPoint = 'https://login.cmu.edu/idp/shibboleth';
+const strategyName = 'cmusaml';
 
 //standard login, callback, logout, and meta-data URLs
 //these will be exposed from module.exports so that
@@ -28,7 +30,7 @@ const strategyName = 'uwsaml';
 //as the auto-regisration process requires that exact URL
 const urls = {
     metadata: '/Shibboleth.sso/Metadata',
-    uwLogoutUrl: 'https://idp.u.washington.edu/idp/logout'
+    logoutUrl: 'https://s3.as.cmu.edu/Shibboleth.sso/Logout'
 };
 
 //export the urls map
@@ -38,20 +40,26 @@ module.exports.urls = urls;
 //we should give them on the resulting user object
 //add to this with other attrs if you request them
 const profileAttrs = {
-    'urn:oid:0.9.2342.19200300.100.1.1': 'netId',
-    'urn:oid:2.16.840.1.113730.3.1.241': 'displayName',
-    'urn:oid:1.3.6.1.4.1.5923.1.1.1.1': 'affiliation',
-    'urn:oid:2.5.4.3': 'cn',
     'urn:oid:0.9.2342.19200300.100.1.3': 'email',
+    'urn:oid:2.5.4.4': 'surname',
+    'urn:oid:2.5.4.42': 'givenName',
+
+    'urn:oid:2.5.4.3': 'sn',
+    'urn:oid:2.16.840.1.113730.3.1.241': 'displayName',
+
+    'urn:oid:1.3.6.1.4.1.5923.1.1.1.9': 'eduPersonScopedAffiliation',
+    'urn:oid:0.9.2342.19200300.100.1.1': 'netId',
+    'urn:oid:1.3.6.1.4.1.5923.1.1.1.1': 'affiliation',
     'urn:oid:2.16.840.1.113730.3.1.3': 'empNum',
     'urn:oid:1.3.6.1.4.1.5923.1.1.1.6': 'principalName',
-    'urn:oid:2.5.4.42': 'givenName',
     'urn:oid:2.5.4.18': 'box',
     'urn:oid:2.5.4.20': 'phone',
-    'urn:oid:2.5.4.4': 'surname',
     'urn:oid:2.5.4.12': 'title',
     'urn:oid:1.2.840.113994.200.21': 'studentId',
-    'urn:oid:1.2.840.113994.200.24': 'regId'
+    'urn:oid:1.2.840.113994.200.24': 'regId',
+    'urn:oid:0.9.2342.19200300.100.1.1': 'Shib-uid',
+    'urn:oid:0.9.2342.19200300.100.1.3': 'Shib-mail',
+    'urn:oid:1.3.6.1.4.1.5643.10.0.1': 'Shib-uaId'
 };
 
 function convertProfileToUser(profile) {
@@ -65,11 +73,13 @@ function convertProfileToUser(profile) {
         }
     }
 
+    console.log('profile:', profile);
+
     return user;    
 }
 
 /*
-    Passport Strategy for UW Shibboleth Authentication
+    Passport Strategy for CMU Shibboleth Authentication
     This class extends passport-saml's Strategy, providing the necessary 
     options and handling the conversion of the returned profile into a 
     sensible user object.
@@ -82,13 +92,14 @@ function convertProfileToUser(profile) {
 */
 function Strategy(options) {
     samlOptions = {
-        entryPoint: uwIdPEntryPoint,
-        cert: uwIdPCert,
+        entryPoint: idPEntryPoint,
+        cert: idPCert,
         identifierFormat: null,
         issuer: options.entityId || options.domain,
         callbackUrl: 'https://' + options.domain + options.callbackUrl,
         decryptionPvk: options.privateKey,
-        privateCert: options.privateKey
+        privateCert: options.privateKey,
+        acceptedClockSkewMs: 180000
     };
 
     function verify(profile, done) {
