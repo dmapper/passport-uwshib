@@ -15,7 +15,7 @@
     Modified for use at Carnegie Mellon University by Artur Zayats
 */
 
-const passport = require('passport');
+//const passport = require('passport');
 const saml = require('passport-saml');
 const util = require('util');
 
