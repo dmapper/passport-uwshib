@@ -1,31 +1,31 @@
 {
-    "name": "passport-cmushib",
-    "version": "0.0.1",
-    "license": "MIT",
-    "keywords": [
-        "passport",
-        "saml",
-        "shibboleth",
-        "sso",
-        "CMU",
-        "Carnegie Mellon University"
-    ],
-    "description": "Passport authentication strategy for Carnegie Mellon University's Shibboleth service",
-    "homepage": "https://github.com/dmapper/passport-cmushib",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/dmapper/passport-cmushib"
-    },
-    "author": {
-        "name": "Artur Zayats",
-        "email": "zag2art@gmail.com"
-    },
-    "bugs": "https://github.com/dmapper/passport-cmushib/issues",
-    "main": "index.js",
-    "dependencies": {
-        "passport-saml": ">=0.5.2"
-    },
-    "engines": {
-        "node": ">=0.10.28"
-    }
+  "name": "passport-cmushib",
+  "version": "0.0.2",
+  "license": "MIT",
+  "keywords": [
+    "passport",
+    "saml",
+    "shibboleth",
+    "sso",
+    "CMU",
+    "Carnegie Mellon University"
+  ],
+  "description": "Passport authentication strategy for Carnegie Mellon University's Shibboleth service",
+  "homepage": "https://github.com/dmapper/passport-cmushib",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dmapper/passport-cmushib"
+  },
+  "author": {
+    "name": "Artur Zayats",
+    "email": "zag2art@gmail.com"
+  },
+  "bugs": "https://github.com/dmapper/passport-cmushib/issues",
+  "main": "index.js",
+  "dependencies": {
+    "passport-saml": ">=0.5.2"
+  },
+  "engines": {
+    "node": ">=0.10.28"
+  }
 }
