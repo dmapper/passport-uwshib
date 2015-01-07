@@ -20,7 +20,11 @@ const saml = require('passport-saml');
 const util = require('util');
 
 const idPCert = 'MIIDLDCCAhSgAwIBAgIJAO1Zt6Sg0xhmMA0GCSqGSIb3DQEBBQUAMBgxFjAUBgNVBAMTDWxvZ2luLmNtdS5lZHUwHhcNMTQwMTIyMTkzMDM2WhcNMzAwNjI5MTkzMDM2WjAYMRYwFAYDVQQDEw1sb2dpbi5jbXUuZWR1MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4yIV5lVs9/7jdmRTi23AINTzGQTrL+p8EXmV1iL48YAZ36T+xnDpTXt2RDaioI34/P9vHYpSKY6C5gDNyXGQZYTrgJQHQRgJAGTsXshYoDeBboZZ9ax+7m86rKqmHZAprHALONubY0UtPDEGQKdMeeetAUAOh8kIKpGvKp96I+4pIT6S/p5VtBB80veOK6woqbzU0Qr9q1FbcZfJ6AjG8as9lBa9Si6vc/fGvFrjsJL3+cpvECuyG/yHp9obdwXLgxlQNPtXNeBgclgiaJJE8zWcZBUxWPboVeuC2Jfv7spIOcCyKPKTGUlobBoANGHqGMqbK+/7YzQ+J/s/4n0tvwIDAQABo3kwdzAdBgNVHQ4EFgQUoZye8kn1Hznd+tCaxJ3elowNIbYwSAYDVR0jBEEwP4AUoZye8kn1Hznd+tCaxJ3elowNIbahHKQaMBgxFjAUBgNVBAMTDWxvZ2luLmNtdS5lZHWCCQDtWbekoNMYZjAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBBQUAA4IBAQCp51hb/WPVfRtdQNZm6OQj8I6HwDGWmu5PzUycJAkD/VYd3wCM1zLwd32LMbxbA2ArKWBstErEsUog94zvMBWyAeT3Q5Gyghji0emF0nbZpNjPjE9bXavMbUppXF2/VHbuBtzEMBxIKV53X2et2MMc9mnNzZN1rofuIB//W9Fg9IWV5PLVbsvEYI98IkJ5t4JP92/V5p497O8jMj6oLhy7mI4FNx0pQnirAvrQxxgFTwVV5SEm87DBYRblUb4ba0yYVSBQg0EVbIb7QEDxHFWbzt4+NLolAQAMSQW+SJKf9V7+6+4uhMwpJxQwezzn41u9kGTIg9F8/s0IrgsTlAm3';
-const idPEntryPoint = 'https://login.cmu.edu/idp/shibboleth';
+//"https://login.cmu.edu/idp/profile/SAML2/Redirect/SSO"
+
+//const idPEntryPoint = 'https://login.cmu.edu/idp/shibboleth';
+const idPEntryPoint = 'https://login.cmu.edu/idp/profile/SAML2/Redirect/SSO';
+
 const strategyName = 'cmusaml';
 
 //standard login, callback, logout, and meta-data URLs
