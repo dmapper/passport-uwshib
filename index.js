@@ -25,8 +25,6 @@ const idPCert = 'MIIDLDCCAhSgAwIBAgIJAO1Zt6Sg0xhmMA0GCSqGSIb3DQEBBQUAMBgxFjAUBgN
 //const idPEntryPoint = 'https://login.cmu.edu/idp/shibboleth';
 const idPEntryPoint = 'https://login.cmu.edu/idp/profile/SAML2/Redirect/SSO';
 
-const strategyName = 'cmusaml';
-
 //standard login, callback, logout, and meta-data URLs
 //these will be exposed from module.exports so that
 //clients can refer to them
@@ -94,7 +92,9 @@ function convertProfileToUser(profile) {
         callbackUrl: login callback url (relative to domain),
         privateKey: your private key for signing requests (optional)
 */
-function Strategy(options) {
+function Strategy(options, verify) {
+    var self = this;
+
     samlOptions = {
         entryPoint: idPEntryPoint,
         cert: idPCert,
@@ -103,18 +103,33 @@ function Strategy(options) {
         callbackUrl: 'https://' + options.domain + options.callbackUrl,
         decryptionPvk: options.privateKey,
         privateCert: options.privateKey,
-        acceptedClockSkewMs: 180000
+        acceptedClockSkewMs: 180000,
+        passReqToCallback: true
     };
 
-    function verify(profile, done) {
-        if (!profile)
-            return done(new Error('Empty SAML profile returned!'));
-        else        
-            return done(null, convertProfileToUser(profile));                
+
+    function _verify(req, profile, done) {
+
+      if (!profile)
+        return done(new Error('Empty SAML profile returned!'));
+      else
+        profile = convertProfileToUser(profile);
+
+      if (!self._verify) return done(null, profile);
+
+      if (self._passReqToCallback) {
+        // Standartize interface
+        self._verify(req, null, null, profile, done);
+      } else {
+        self._verify(null, null, profile, done);
+      }
     }
 
-    saml.Strategy.call(this, samlOptions, verify);
-    this.name = strategyName;
+    this._verify = verify
+    this._passReqToCallback = options.passReqToCallback;
+
+    saml.Strategy.call(this, samlOptions, _verify);
+    this.name = options.name || cmusaml;
 }
 
 util.inherits(Strategy, saml.Strategy);

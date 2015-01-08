@@ -23,7 +23,7 @@
   "bugs": "https://github.com/dmapper/passport-cmushib/issues",
   "main": "index.js",
   "dependencies": {
-    "passport-saml": ">=0.5.2"
+    "passport-saml": "git://github.com/dmapper/passport-saml.git"
   },
   "engines": {
     "node": ">=0.10.28"
