@@ -1,4 +1,3 @@
-
 "use strict;"
 
 /*
@@ -43,8 +42,8 @@ module.exports.urls = urls;
 //add to this with other attrs if you request them
 const profileAttrs = {
     'urn:oid:0.9.2342.19200300.100.1.3': 'email',
-    'urn:oid:2.5.4.4': 'surname',
-    'urn:oid:2.5.4.42': 'givenName',
+    'urn:oid:2.5.4.4': 'lastname',
+    'urn:oid:2.5.4.42': 'firstname',
 
     'urn:oid:2.5.4.3': 'sn',
     'urn:oid:2.16.840.1.113730.3.1.241': 'displayName',
@@ -64,21 +63,7 @@ const profileAttrs = {
     'urn:oid:1.3.6.1.4.1.5643.10.0.1': 'Shib-uaId'
 };
 
-function convertProfileToUser(profile) {
-    var user = {};
-    var niceName;
-    var attr;
-    for (attr in profile) {
-        niceName = profileAttrs[attr];
-        if (niceName !== undefined && profile[attr]) {
-            user[niceName] = profile[attr];
-        }
-    }
 
-    console.log('profile:', profile);
-
-    return user;    
-}
 
 /*
     Passport Strategy for CMU Shibboleth Authentication
@@ -93,6 +78,7 @@ function convertProfileToUser(profile) {
         privateKey: your private key for signing requests (optional)
 */
 function Strategy(options, verify) {
+
     var self = this;
 
     samlOptions = {
@@ -107,28 +93,46 @@ function Strategy(options, verify) {
         passReqToCallback: true
     };
 
+    function convertProfileToUser(req, profile) {
+      var user = {};
+      var niceName;
+      var attr;
+      for (attr in profile) {
+        niceName = profileAttrs[attr];
+        if (niceName !== undefined && profile[attr]) {
+          user[niceName] = profile[attr];
+        }
+      }
+
+      user.email = user.email || user.principalName || '';
+      user.name = user.name || user.email.split('@')[0];
+      user.provider = self.name;
+
+      if (req && req.query && req.query.profId) {
+        user.profId = req.query.profId;
+      }
+
+      return user;
+    }
 
     function _verify(req, profile, done) {
 
       if (!profile)
         return done(new Error('Empty SAML profile returned!'));
       else
-        profile = convertProfileToUser(profile);
+        profile = convertProfileToUser(req, profile);
 
-      if (!self._verify) return done(null, profile);
+      if (!verify) return done(null, profile);
 
-      if (self._passReqToCallback) {
-        // Standartize interface
-        self._verify(req, null, null, profile, done);
+      if (options.passReqToCallback) {
+        verify(req, undefined, undefined, profile, done);
       } else {
-        self._verify(null, null, profile, done);
+        verify(undefined, undefined, profile, done);
       }
     }
 
-    this._verify = verify
-    this._passReqToCallback = options.passReqToCallback;
-
     saml.Strategy.call(this, samlOptions, _verify);
+
     this.name = options.name || 'cmushib';
 }
 
