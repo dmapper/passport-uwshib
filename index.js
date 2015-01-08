@@ -129,7 +129,7 @@ function Strategy(options, verify) {
     this._passReqToCallback = options.passReqToCallback;
 
     saml.Strategy.call(this, samlOptions, _verify);
-    this.name = options.name || cmusaml;
+    this.name = options.name || 'cmushib';
 }
 
 util.inherits(Strategy, saml.Strategy);
