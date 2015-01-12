@@ -106,11 +106,10 @@ function Strategy(options, verify) {
 
       user.email = user.email || user.principalName || '';
       user.name = user.name || user.email.split('@')[0];
+
       user.provider = self.name;
 
-      if (req && req.query && req.query.profId) {
-        user.profId = req.query.profId;
-      }
+      user.id = user.email;
 
       return user;
     }
