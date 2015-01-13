@@ -104,12 +104,13 @@ function Strategy(options, verify) {
         }
       }
 
-      user.email = user.email || user.principalName || '';
-      user.name = user.name || user.email.split('@')[0];
+      var email = user.email || user.principalName || '';
+
+      user.id = email;
+      user.email = email
+      user.name = user.name || user.displayName || email.split('@')[0];
 
       user.provider = self.name;
-
-      user.id = user.email;
 
       return user;
     }
