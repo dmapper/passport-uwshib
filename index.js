@@ -110,6 +110,16 @@ function Strategy(options, verify) {
       user.email = email
       user.name = user.name || user.displayName || email.split('@')[0];
 
+      if (user.displayName){
+        var words = user.displayName.split(' ');
+
+        var firstname = words.shift();
+        var lastname = words.join(' ');
+
+        user.firstname = user.firstname || firstname;
+        user.lastname = user.lastname || lastname;
+      }
+
       user.provider = self.name;
 
       return user;
