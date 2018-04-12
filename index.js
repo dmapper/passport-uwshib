@@ -87,8 +87,8 @@ function Strategy(options, verify) {
         identifierFormat: null,
         issuer: options.entityId || options.domain,
         callbackUrl: 'https://' + options.domain + options.callbackUrl,
-        decryptionPvk: options.privateKey,
-        privateCert: options.privateKey,
+        decryptionPvk: options.decryptionPvk || options.privateKey,
+        privateCert: options.privateCert || options.privateKey,
         acceptedClockSkewMs: 180000,
         passReqToCallback: true
     };
