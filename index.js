@@ -84,7 +84,7 @@ function Strategy(options, verify) {
     samlOptions = {
         entryPoint: idPEntryPoint,
         cert: idPCert,
-        identifierFormat: null,
+        NameIDAllowCreate: true,
         issuer: options.entityId || options.domain,
         callbackUrl: 'https://' + options.domain + options.callbackUrl,
         decryptionPvk: options.decryptionPvk || options.privateKey,
