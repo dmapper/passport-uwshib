@@ -85,6 +85,7 @@ function Strategy(options, verify) {
         entryPoint: idPEntryPoint,
         cert: idPCert,
         NameIDAllowCreate: true,
+        identifierFormat: null,
         issuer: options.entityId || options.domain,
         callbackUrl: 'https://' + options.domain + options.callbackUrl,
         decryptionPvk: options.decryptionPvk || options.privateKey,
