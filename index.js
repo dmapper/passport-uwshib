@@ -89,6 +89,7 @@ function Strategy(options, verify) {
         callbackUrl: 'https://' + options.domain + options.callbackUrl,
         decryptionPvk: options.decryptionPvk || options.privateKey,
         privateCert: options.privateCert || options.privateKey,
+        disableRequestedAuthnContext: true,
         acceptedClockSkewMs: 180000,
         passReqToCallback: true
     };
