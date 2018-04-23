@@ -84,14 +84,12 @@ function Strategy(options, verify) {
     samlOptions = {
         entryPoint: idPEntryPoint,
         cert: idPCert,
-        NameIDAllowCreate: true,
         identifierFormat: null,
         issuer: options.entityId || options.domain,
         path: options.callbackUrl,
         callbackUrl: 'https://' + options.domain + options.callbackUrl,
         decryptionPvk: options.decryptionPvk || options.privateKey,
         privateCert: options.privateCert || options.privateKey,
-        disableRequestedAuthnContext: true,
         acceptedClockSkewMs: 180000,
         passReqToCallback: true
     };
