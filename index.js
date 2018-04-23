@@ -163,7 +163,7 @@ module.exports.Strategy = Strategy;
 */
 module.exports.metadataRoute = function(strategy, publicCert) {
     return function(req, res) {
-        res.type('application/xml');
+        res.type('application/samlmetadata+xml');
         res.status(200).send(strategy.generateServiceProviderMetadata(publicCert));
     }
 } //metadataRoute
