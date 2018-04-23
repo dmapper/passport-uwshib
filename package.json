@@ -23,7 +23,7 @@
   "bugs": "https://github.com/dmapper/passport-cmushib/issues",
   "main": "index.js",
   "dependencies": {
-    "passport-saml": "DerekTBrown/passport-saml#patch-1"
+    "passport-saml": "^0.33.0"
   },
   "engines": {
     "node": ">=0.10.28"
