@@ -77,7 +77,7 @@ function Strategy(options, verify) {
     };
     
     function formatProfile(req, profile){
-       profile.id = [ profile[profileAttrs['id'] ];
+       profile.id = [ profile[profileAttrs['id']] ];
        profile.emails = [ profile[profileAttrs['email']] ];
        return profile;  
     };
