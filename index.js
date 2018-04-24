@@ -136,9 +136,9 @@ function Strategy(options, verify) {
       if (!verify) return done(null, profile);
 
       if (options.passReqToCallback) {
-        verify(req, undefined, undefined, profile, done);
+        verify(req, profile, done);
       } else {
-        verify(undefined, undefined, profile, done);
+        verify(profile, done);
       }
     }
 
