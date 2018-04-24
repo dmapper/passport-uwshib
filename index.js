@@ -130,8 +130,6 @@ function Strategy(options, verify) {
 
       if (!profile)
         return done(new Error('Empty SAML profile returned!'));
-      else
-        profile = convertProfileToUser(req, profile);
 
       if (!verify) return done(null, profile);
 
