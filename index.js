@@ -94,38 +94,6 @@ function Strategy(options, verify) {
         passReqToCallback: true
     };
 
-    function convertProfileToUser(req, profile) {
-      var user = {};
-      var niceName;
-      var attr;
-      for (attr in profile) {
-        niceName = profileAttrs[attr];
-        if (niceName !== undefined && profile[attr]) {
-          user[niceName] = profile[attr];
-        }
-      }
-
-      var email = user.email || user.principalName || '';
-
-      user.id = email;
-      user.email = email
-      user.name = user.name || user.displayName || email.split('@')[0];
-
-      if (user.displayName){
-        var words = user.displayName.split(' ');
-
-        var firstname = words.shift();
-        var lastname = words.join(' ');
-
-        user.firstname = user.firstname || firstname;
-        user.lastname = user.lastname || lastname;
-      }
-
-      user.provider = self.name;
-
-      return user;
-    }
-
     function _verify(req, profile, done) {
 
       if (!profile)
