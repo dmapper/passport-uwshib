@@ -96,7 +96,6 @@ function Strategy(options, verify) {
     
     function formatProfile(req, profile){
        console.log("Format Profile");
-       console.log(req);
        console.log(profile);
        return profile;  
     };
