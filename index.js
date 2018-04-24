@@ -41,26 +41,8 @@ module.exports.urls = urls;
 //we should give them on the resulting user object
 //add to this with other attrs if you request them
 const profileAttrs = {
-    'urn:oid:0.9.2342.19200300.100.1.3': 'email',
-    'urn:oid:2.5.4.4': 'lastname',
-    'urn:oid:2.5.4.42': 'firstname',
-
-    'urn:oid:2.5.4.3': 'sn',
-    'urn:oid:2.16.840.1.113730.3.1.241': 'displayName',
-
-    'urn:oid:1.3.6.1.4.1.5923.1.1.1.9': 'eduPersonScopedAffiliation',
-    'urn:oid:0.9.2342.19200300.100.1.1': 'netId',
-    'urn:oid:1.3.6.1.4.1.5923.1.1.1.1': 'affiliation',
-    'urn:oid:2.16.840.1.113730.3.1.3': 'empNum',
-    'urn:oid:1.3.6.1.4.1.5923.1.1.1.6': 'principalName',
-    'urn:oid:2.5.4.18': 'box',
-    'urn:oid:2.5.4.20': 'phone',
-    'urn:oid:2.5.4.12': 'title',
-    'urn:oid:1.2.840.113994.200.21': 'studentId',
-    'urn:oid:1.2.840.113994.200.24': 'regId',
-    'urn:oid:0.9.2342.19200300.100.1.1': 'Shib-uid',
-    'urn:oid:0.9.2342.19200300.100.1.3': 'Shib-mail',
-    'urn:oid:1.3.6.1.4.1.5643.10.0.1': 'Shib-uaId'
+    'id' : 'nameID',
+    'email' : 'urn:oid:1.3.6.1.4.1.5923.1.1.1.6'
 };
 
 
@@ -95,8 +77,8 @@ function Strategy(options, verify) {
     };
     
     function formatProfile(req, profile){
-       console.log("Format Profile");
-       console.log(profile);
+       profile.id = [ profile[profileAttrs['id'] ];
+       profile.emails = [ profile[profileAttrs['email']] ];
        return profile;  
     };
 
