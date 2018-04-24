@@ -93,11 +93,20 @@ function Strategy(options, verify) {
         acceptedClockSkewMs: 180000,
         passReqToCallback: true
     };
+    
+    function formatProfile(req, profile){
+       console.log("Format Profile");
+       console.log(req);
+       console.log(profile);
+       return profile;  
+    };
 
     function _verify(req, profile, done) {
 
       if (!profile)
         return done(new Error('Empty SAML profile returned!'));
+      else
+        profile = formatProfile(req, profile);
 
       if (!verify) return done(null, profile);
 
