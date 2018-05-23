@@ -41,26 +41,8 @@ module.exports.urls = urls;
 //we should give them on the resulting user object
 //add to this with other attrs if you request them
 const profileAttrs = {
-    'urn:oid:0.9.2342.19200300.100.1.3': 'email',
-    'urn:oid:2.5.4.4': 'lastname',
-    'urn:oid:2.5.4.42': 'firstname',
-
-    'urn:oid:2.5.4.3': 'sn',
-    'urn:oid:2.16.840.1.113730.3.1.241': 'displayName',
-
-    'urn:oid:1.3.6.1.4.1.5923.1.1.1.9': 'eduPersonScopedAffiliation',
-    'urn:oid:0.9.2342.19200300.100.1.1': 'netId',
-    'urn:oid:1.3.6.1.4.1.5923.1.1.1.1': 'affiliation',
-    'urn:oid:2.16.840.1.113730.3.1.3': 'empNum',
-    'urn:oid:1.3.6.1.4.1.5923.1.1.1.6': 'principalName',
-    'urn:oid:2.5.4.18': 'box',
-    'urn:oid:2.5.4.20': 'phone',
-    'urn:oid:2.5.4.12': 'title',
-    'urn:oid:1.2.840.113994.200.21': 'studentId',
-    'urn:oid:1.2.840.113994.200.24': 'regId',
-    'urn:oid:0.9.2342.19200300.100.1.1': 'Shib-uid',
-    'urn:oid:0.9.2342.19200300.100.1.3': 'Shib-mail',
-    'urn:oid:1.3.6.1.4.1.5643.10.0.1': 'Shib-uaId'
+    'id' : 'nameID',
+    'email' : 'urn:oid:1.3.6.1.4.1.5923.1.1.1.6'
 };
 
 
@@ -86,58 +68,33 @@ function Strategy(options, verify) {
         cert: idPCert,
         identifierFormat: null,
         issuer: options.entityId || options.domain,
+        path: options.callbackUrl,
         callbackUrl: 'https://' + options.domain + options.callbackUrl,
-        decryptionPvk: options.privateKey,
-        privateCert: options.privateKey,
+        decryptionPvk: options.decryptionPvk || options.privateKey,
+        privateCert: options.privateCert || options.privateKey,
         acceptedClockSkewMs: 180000,
         passReqToCallback: true
     };
-
-    function convertProfileToUser(req, profile) {
-      var user = {};
-      var niceName;
-      var attr;
-      for (attr in profile) {
-        niceName = profileAttrs[attr];
-        if (niceName !== undefined && profile[attr]) {
-          user[niceName] = profile[attr];
-        }
-      }
-
-      var email = user.email || user.principalName || '';
-
-      user.id = email;
-      user.email = email
-      user.name = user.name || user.displayName || email.split('@')[0];
-
-      if (user.displayName){
-        var words = user.displayName.split(' ');
-
-        var firstname = words.shift();
-        var lastname = words.join(' ');
-
-        user.firstname = user.firstname || firstname;
-        user.lastname = user.lastname || lastname;
-      }
-
-      user.provider = self.name;
-
-      return user;
-    }
+    
+    function formatProfile(req, profile){
+       profile.id = profile[profileAttrs['email']].split('@')[0];
+       profile.emails = [ profile[profileAttrs['email']] ];
+       return profile;  
+    };
 
     function _verify(req, profile, done) {
 
       if (!profile)
         return done(new Error('Empty SAML profile returned!'));
       else
-        profile = convertProfileToUser(req, profile);
+        profile = formatProfile(req, profile);
 
       if (!verify) return done(null, profile);
 
       if (options.passReqToCallback) {
-        verify(req, undefined, undefined, profile, done);
+        verify(req, profile, done);
       } else {
-        verify(undefined, undefined, profile, done);
+        verify(profile, done);
       }
     }
 
@@ -160,7 +117,7 @@ module.exports.Strategy = Strategy;
 */
 module.exports.metadataRoute = function(strategy, publicCert) {
     return function(req, res) {
-        res.type('application/xml');
+        res.type('application/samlmetadata+xml');
         res.status(200).send(strategy.generateServiceProviderMetadata(publicCert));
     }
 } //metadataRoute
