@@ -3,7 +3,7 @@ Passport-CMUShib
 
 Passport authentication strategy that works with the Carnegie Mellon University's Shibboleth single-sign on service. This uses the fabulous [passport-saml](https://github.com/bergie/passport-saml) module for all the heavy lifting, but sets all the default options so that it works properly with the CMU Shibboleth Identity Provider (IdP).
 
-Note that in order to use the CMU IdP for authentication, **you must [register your server](http://www.cmu.edu/computing/web/authenticate/web-login/shib.html)**. 
+Note that in order to use the CMU IdP for authentication, **you must [register your server](http://www.cmu.edu/computing/web/authenticate/web-login/shib.html)**.   NOTE: By default the Identity Services team will assume that you are using the Apache configuration.  You should direct them to the metadata endpoint of your server so they can copy the correct configuration.
 
 Installation
 ------------
